@@ -1,30 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Banner.css'
+import axios from './Axios'
+import requests from './Request'
 const Banner = () => {
 
+  const [movie,setMovie]=useState([])
 
+useEffect(() => {
+  async function fetchData(){
+    const request =await axios.get(requests.fetchNetflixOriginals);
+  
+    setMovie(request.data.results[
+      Math.floor(Math.random()* request.data.results.length-1)
+    ])
+    return request
+   
+  }
+  
+  fetchData()
+}, [])
+
+
+console.log(movie)
   function truncate(string,n){
     return string?.length > n  ? string.substr(0,n-1)+'...': string
   }
   return (
     <header className='banner' style={{
         // backgroundImage: `url('https://raw.githubusercontent.com/thatanjan/netflix-clone-yt/youtube/media//banner.jpg')`,
-        backgroundImage: `url('https://wallpapercave.com/wp/wp2832050.png')`,
+        backgroundImage: `url('https://image.tmdb.org/t/p/original/${movie?.backdrop_path}')`,
         backgroundSize:"cover",
         backgroundPosition:"center center",
     }}>
         <div className='banner_contents'>
-            <h1 className='banner_title'>Movie Name</h1> 
+            <h1 className='banner_title'>
+              {movie?.title || movie?.name || movie?.original_name}
+              </h1> 
             <div className='banner_buttons'>
               <button className='banner_button'>Play</button>
               <button className='banner_button'>My List</button>
             </div>
             <div className="banner_description">
-             {truncate(` This is a test description
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis qui perspiciatis doloribus molestias laborum provident               
-              necessitatibus id illo ipsum, alias quia facilis iusto aliquam modi dignissimos sunt? Esse, vitae alias!
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint nostrum, dolorem voluptatibus animi velit dignissimos magnam 
-              nulla dolore veniam ad quas ex. Delectus architecto expedita ipsam itaque hic maxime ex!`,150)}
+             {truncate(movie?.overview,150)}
             </div>
             <div className="banner-fadeBottom"/>
 
